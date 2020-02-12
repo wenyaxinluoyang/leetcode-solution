@@ -1,0 +1,63 @@
+1.两数之和
+c++代码
+解法1：两层暴力循环，时间复杂度O(n^2)
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        vector<int> result;
+        for(int i = 0; i < nums.size(); i++) {
+            for(int j = i+1; j < nums.size(); j++) {
+                if (nums[i]+nums[j] == target) {
+                    result.push_back(i);
+                    result.push_back(j);
+                    return result;
+                }
+            }
+        }
+        vector<int> temp;
+        return temp;
+    }
+};
+
+
+解法2：使用stl中的map
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        vector<int> result;
+        map<int, int> m;
+        for(int i = 0; i < nums.size(); i++) {
+            if(m.find(target - nums[i]) == m.end()) {
+                m[nums[i]] = i;
+            } else {
+                result.push_back(m.find(target - nums[i])->second);
+                result.push_back(i);
+                return result;
+            }
+        }
+        vector<int> temp;
+        return temp;
+    }
+};
+
+
+
+
+python代码：
+class Solution(object):
+    def twoSum(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: List[int]
+        """
+        for index,n in enumerate(nums):
+            m = target - n
+            try:
+                pos = nums.index(m)
+                if pos == index: pass
+                else: return [index, nums.index(m)]
+            except:
+                pass
+        return []
+
