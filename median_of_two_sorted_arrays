@@ -1,0 +1,84 @@
+C++ code：
+#include <iostream>
+
+const int maxn = 0x7f7f7f;
+using namespace std;
+
+class Solution {
+public:
+
+    //获取两个有序序列的第K大数
+    double getKthNum(int A[], int start_a, int m, int B[], int start_b, int n, int k) {
+        if (start_a >= m) {
+            return B[start_b + k - 1];
+        }
+        if (start_b >= n) {
+            return A[start_a + k - 1];
+        }
+        if (k == 1) {
+            if (A[start_a] < B[start_b]) return A[start_a];
+            else return B[start_b];
+        }
+        int mid = k/2 - 1;
+        int a = maxn;
+        int b = maxn;
+        if (start_a + mid < m) a = A[start_a + mid];
+        if (start_b + mid < n) b = B[start_b + mid];
+        if (a < b) {
+            return getKthNum(A, start_a + k/2, m, B, start_b, n, k - k/2);
+        } else {
+            return getKthNum(A, start_a, m, B, start_b + k/2, n, k - k/2);
+        }
+    }
+
+int main() {
+    Solution s;
+    int A[] = {};
+    int B[] = {1};
+    int m = 0;
+    int n = 1;
+    double ans = s.findMedianSortedArrays(A, m, B, n);
+    cout<<ans<<endl;
+    return 0;
+}
+
+    double findMedianSortedArrays(int A[], int m, int B[], int n) {
+        int l = (m+n+1) / 2;
+        int r = (m+n+2) / 2;
+        int l_ans = getKthNum(A, 0, m, B, 0, n, l);
+        int r_ans = getKthNum(A, 0, m, B, 0, n, r);
+        double ans = (l_ans + r_ans)*1.0 / 2;
+        return ans;
+    }
+};
+
+
+
+
+
+python code:
+class Solution:
+    def get_kth(self, list_1, start_1, list_2, start_2, k):
+        if start_1 >= len(list_1):
+            return list_2[start_2 + k - 1]
+        if start_2 >= len(list_2):
+            return list_1[start_1 + k - 1]
+        if k == 1:
+            return min(list_1[start_1], list_2[start_2])
+        if (start_1 + k//2 - 1) < len(list_1):
+            a = list_1[start_1 + k//2 - 1]
+        if (start_2 + k//2 - 1) < len(list_2):
+            b = list_2[start_2 + k//2 - 1]
+        if a < b:
+            # list1的 start_1 ~ start_1 + k//2 的数字都不符合要求
+            return self.get_kth(list_1, start_1 + k//2, list_2, start_2, k - k//2)
+        else:
+            return self.get_kth(list_1, start_1, list_2, start_2 + k//2, k - k//2)
+
+    def findMedianSortedArrays(self , A , B ):
+        m, n = len(A), len(B)
+        l, r = (m + n + 1)//2, (m + n + 2)//2
+        summary = self.get_kth(A, 0, B, 0, l) + self.get_kth(A, 0, B, 0, r)
+        ans = summary/2
+        # ans = '%.6f' % ans
+        return ans
