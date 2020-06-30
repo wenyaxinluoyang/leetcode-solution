@@ -1,0 +1,111 @@
+求一个字符串中，最长的不具有重复字符的子串的长度
+
+python code:
+解法1：时间复杂度高
+思路：截取每一个子串，判断是否有重复字符，有的话跳过，
+没有的话，让字符串长度与当前答案做比较，取大者为新答案。
+运行时间:45ms
+class Solution:
+    def lengthOfLongestSubstring(self, s):
+        # write code here
+        if len(s) ==0 : return 0
+        length = len(s)
+        ans = 1
+        for i in range(length):
+            for j in range(length):
+                temp = s[i:j]
+                my_dict = dict()
+                flag = True
+                for ch in temp:
+                     my_dict[ch] = my_dict.get(ch, 0) + 1
+                     if my_dict[ch] > 1:
+                         flag = False
+                         break
+                if flag:
+                    if len(temp) > ans: ans = len(temp)
+        return ans
+
+解法2：时间复杂的提高一些
+思路：遍历字符串，记当前子串为cur,当前字符为ch。
+如果ch不在cur，拼接上ch构成新的cur；
+如果ch在cur,则找到cur中的字符ch,去掉ch和其之前的字符，在拼接上ch，构成新的cur；
+将cur的长度与当前答案比较，取大者作为新答案。
+运行时间: 31ms
+class Solution:
+    def lengthOfLongestSubstring(self, s):
+        # write code here
+        if len(s) ==0 : return 0
+        ans = 0
+        cur = ""
+        ch_pos = dict()
+        for ch in s:
+            exist = False
+            if ch_pos.get(ch, 0) == 1:
+                exist = True
+            if exist == False:
+                ch_pos[ch] = 1
+                cur = cur + ch
+            else:
+                start = 0
+                length = len(cur)
+                for i in range(length):
+                    if cur[i] == ch:
+                        start = i
+                        break
+                    ch_pos[cur[i]] = 0
+                cur = cur[start+1: len(cur)] + ch
+            if len(cur) > ans: ans = len(cur)
+        return ans
+
+C++ code
+解题思路和python代码的第二个思路一样。不得感叹，还是C++快。运行时间就4ms。
+#include <iostream>
+#include <string.h>
+#include <string>
+
+const int maxn = 0x7f7f7f;
+using namespace std;
+
+class Solution {
+
+public:
+    /**
+     *
+     * @param s string字符串
+     * @return int整型
+     */
+    int lengthOfLongestSubstring(string s) {
+        // write code here
+        int len = s.length();
+        if (len == 0) return 0;
+        int array[30];
+        int ans = 0;
+        int start = 0;
+        memset(array, -1, sizeof(array));
+        for(int i = 0; i < len; i++) {
+            char ch = s[i];
+            int index = ch - 'a';
+            if (array[index] == -1) {
+                if (i-start+1 > ans) ans = i-start+1;
+            } else {
+                int pos = array[index];
+                for(int j = 0; j < 30; j++) {
+                    if (array[j] <= pos) array[j] = -1;
+                }
+                start = pos + 1;
+            }
+            if (i-start+1 > ans) ans = i-start+1;
+            array[index] = i;
+        }
+        return ans;
+    }
+};
+
+int main() {
+    Solution s;
+    string str = "abcabcbb";
+    int ans = s.lengthOfLongestSubstring(str);
+    cout<<ans<<endl;
+    return 0;
+}
+
